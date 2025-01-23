@@ -4,4 +4,8 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 .idea
+.vs
 BEAM.Tests/loggerTests/testLogs
+
+.DS_Store
+Thumbs.db
