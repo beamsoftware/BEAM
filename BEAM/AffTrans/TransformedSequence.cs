@@ -18,7 +18,6 @@ public class TransformedSequence(Sequence originalSequence, Transformer transfor
         double scaledPixel = originalSequence.GetPixel(transformedCoordinate.transformedX, transformedCoordinate.transformedY, channel);
         return scaledPixel;
     }
-
     public double[,] GetPixelLine(long y)
     {
         throw new NotImplementedException();
