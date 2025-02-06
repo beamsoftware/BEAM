@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using BEAM.Image.Bitmap;
@@ -18,12 +19,15 @@ namespace BEAM.Views;
 
 public partial class SequenceView : UserControl
 {
+    private ISequence _sequence;
+    private BitmapPlottable _plottable;
+
     public SequenceView()
     {
         InitializeComponent();
     }
 
-    private void FillPlot(Sequence sequence)
+    private void PreparePlot()
     {
         _ApplyDarkMode();
         _BuildCustomRightClickMenu();
@@ -37,16 +41,8 @@ public partial class SequenceView : UserControl
 
         //var panButton = ScottPlot.Interactivity.StandardMouseButtons.Middle;
         //var panResponse = new ScottPlot.Interactivity.UserActionResponses.MouseDragPan(panButton);
-        using var _ = Timer.Start();
-
         AvaPlot1.Plot.Axes.InvertY();
         AvaPlot1.Plot.Axes.SquareUnits();
-
-        var plottable = new BitmapPlottable(sequence);
-        AvaPlot1.Plot.Add.Plottable(plottable);
-
-        plottable.SequenceImage.RequestRefreshPlotEvent += (sender, args) => AvaPlot1.Refresh();
-
         AvaPlot1.Refresh();
     }
 
@@ -78,10 +74,8 @@ public partial class SequenceView : UserControl
         menu.Add("Sync to this",
             control => Logger.GetInstance().Warning(LogEvent.BasicMessage, "Not implemented yet!"));
         menu.AddSeparator();
-        menu.Add("Configure colors",
-            control => Logger.GetInstance().Warning(LogEvent.BasicMessage, "Not implemented yet!"));
-        menu.Add("Affine Transformation",
-            control => Logger.GetInstance().Warning(LogEvent.BasicMessage, "Not implemented yet!"));
+        menu.Add("Configure colors", control => _OpenColorsPopup());
+        menu.Add("Affine Transformation", control => _OpenTransformPopup());
         menu.AddSeparator();
         menu.Add("Export sequence",
             control => Logger.GetInstance().Warning(LogEvent.BasicMessage, "Not implemented yet!"));
@@ -90,7 +84,38 @@ public partial class SequenceView : UserControl
     private void StyledElement_OnDataContextChanged(object? sender, EventArgs e)
     {
         var vm = DataContext as SequenceViewModel;
+        _sequence = vm.Sequence;
 
-        FillPlot(vm.Sequence);
+        PreparePlot();
+
+        _plottable = new BitmapPlottable(_sequence, vm.CurrentRenderer);
+        AvaPlot1.Plot.Add.Plottable(_plottable);
+
+        _plottable.SequenceImage.RequestRefreshPlotEvent += (sender, args) => AvaPlot1.Refresh();
+
+        AvaPlot1.Refresh();
+
+        // Changed the sequence view -> full rerender
+        vm.RenderersUpdated += (_, args) =>
+        {
+            _plottable.SequenceImage.Reset();
+            _plottable.ChangeRenderer(vm.CurrentRenderer);
+            AvaPlot1.Refresh();
+        };
+    }
+
+    private void _OpenTransformPopup()
+    {
+        AffineTransformationPopup popup = new(DataContext as SequenceViewModel);
+        var v = Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+        popup.ShowDialog(v.MainWindow);
+    }
+
+    private void _OpenColorsPopup()
+    {
+        ColorSettingsPopup popup = new(DataContext as SequenceViewModel);
+        var v = Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+
+        popup.ShowDialog(v.MainWindow);
     }
 }

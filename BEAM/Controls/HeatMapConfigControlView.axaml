@@ -1,0 +1,14 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:BEAM.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="controls:HeatMapConfigControlViewModel"
+             x:Class="BEAM.Controls.HeatMapConfigControlView">
+    <StackPanel Orientation="Horizontal">
+        <TextBlock VerticalAlignment="Center" Margin="10 0">Channel:</TextBlock>
+        <!--<TextBox TextChanged="_InputChanged" Text="{Binding ChannelText}"/>-->
+        <NumericUpDown Value="{Binding Channel}" FormatString="N0" Minimum="{Binding Min}" Maximum="{Binding Max}" MinWidth="110" ParsingNumberStyle="Integer" />
+    </StackPanel>
+</UserControl>

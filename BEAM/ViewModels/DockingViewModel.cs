@@ -29,7 +29,7 @@ public partial class DockingViewModel : ViewModelBase
 
 
     [RelayCommand]
-    public void OpenSequenceView(Sequence sequence)
+    public void OpenSequenceView(ISequence sequence)
     {
         OpenDock(new SequenceViewModel(sequence));
     }

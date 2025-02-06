@@ -12,7 +12,7 @@ namespace BEAM.ImageSequence;
 /// Implementation details for envi images.
 /// </summary>
 /// <param name="imagePaths">The envi images to use inside the sequence.</param>
-public class EnviSequence(List<string> imagePaths) : Sequence(imagePaths)
+public class EnviSequence(List<string> imagePaths, string name) : DiskSequence(imagePaths, name)
 {
     protected override IImage LoadImage(int index) => EnviImage.OpenImage(imagePaths[index]);
 

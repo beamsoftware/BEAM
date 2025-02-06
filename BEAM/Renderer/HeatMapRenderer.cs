@@ -70,7 +70,7 @@ public abstract class HeatMapRenderer : SequenceRenderer
     }
 
 
-    protected HeatMapRenderer(int minimumOfIntensityRange, int maximumOfIntensityRange, int channel,
+    protected HeatMapRenderer(double minimumOfIntensityRange, double maximumOfIntensityRange, int channel,
         double relMaxColdestIntensity, double relMinHottestIntensity)
         : base(minimumOfIntensityRange, maximumOfIntensityRange)
     {
@@ -79,14 +79,14 @@ public abstract class HeatMapRenderer : SequenceRenderer
         RelMinHottestIntensity = relMinHottestIntensity;
     }
 
-    public override byte[] RenderPixel(Sequence sequence, long x, long y)
+    public override byte[] RenderPixel(ISequence sequence, long x, long y)
     {
         return GetColor(sequence.GetPixel(x, y, Channel),
             IntensityRange * RelMaxColdestIntensity + MinimumOfIntensityRange,
             IntensityRange * RelMinHottestIntensity + MinimumOfIntensityRange);
     }
 
-    public override byte[,] RenderPixels(Sequence sequence, long[] xs, long y,
+    public override byte[,] RenderPixels(ISequence sequence, long[] xs, long y,
         CancellationTokenSource? tokenSource = null)
     {
         var data = new byte[xs.Length, 4];
@@ -98,10 +98,10 @@ public abstract class HeatMapRenderer : SequenceRenderer
             tokenSource?.Token.ThrowIfCancellationRequested();
 
             var color = GetColor(img.GetPixel(i, 0, 0), MinimumOfIntensityRange, MaximumOfIntensityRange);
-            data[i, 0] = color[0];
-            data[i, 1] = color[1];
-            data[i, 2] = color[2];
-            data[i, 3] = color[3];
+            data[i, 0] = color[1];
+            data[i, 1] = color[2];
+            data[i, 2] = color[3];
+            data[i, 3] = color[0];
         }
 
         return data;
@@ -117,4 +117,6 @@ public abstract class HeatMapRenderer : SequenceRenderer
     /// <returns>The ARGB values of the final Color to be displayed.
     /// (A, R, G, B) each color from 0 - 255. A = 0 : fully transparent</returns>
     protected abstract byte[] GetColor(double value, double min, double max);
+
+    public override string GetName() => "Heatmap";
 }

@@ -11,7 +11,7 @@ namespace BEAM.Image.Minimap;
 /// </summary>
 public class MinimapCreator
 {
-    private readonly Sequence _sequence;
+    private readonly ISequence _sequence;
     private bool _isGenerated = false;
     
     /// <summary>
@@ -32,7 +32,7 @@ public class MinimapCreator
     /// This is being done through the <see cref="MinimapGeneratedEventHandler"/> event.</param>
     /// <param name="algorithm">The concrete algorithm used for value calculation.</param>
     /// <exception cref="ArgumentNullException">Is any of the parameters is null.</exception>
-    public MinimapCreator(Sequence sequence, MinimapGeneratedEventHandler eventCallbackFunc, IMinimapAlgorithm algorithm)
+    public MinimapCreator(ISequence sequence, MinimapGeneratedEventHandler eventCallbackFunc, IMinimapAlgorithm algorithm)
     {
         if (sequence is null || eventCallbackFunc is null || algorithm is null)
         {

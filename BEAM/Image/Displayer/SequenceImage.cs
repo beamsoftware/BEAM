@@ -37,7 +37,7 @@ public class SequenceImage : IDisposable
     /// <param name="sequence">The sequence to render from</param>
     /// <param name="seqImg">The SequenceImage class which manages this object</param>
     /// <param name="yStart">The position where to place this sequence part inside a sequence</param>
-    public class SequencePart(Sequence sequence, SequenceImage seqImg, long yStart) : IDisposable
+    public class SequencePart(ISequence sequence, SequenceImage seqImg, long yStart) : IDisposable
     {
         private static readonly SKPaint Paint = new() { FilterQuality = SKFilterQuality.None };
 
@@ -157,7 +157,10 @@ public class SequenceImage : IDisposable
         return (_sequenceParts[0].YStart, _sequenceParts[^1].YEnd);
     }
 
-    private readonly Sequence _sequence;
+    private readonly ISequence _sequence;
+    private long _startLine;
+
+    public SequenceRenderer Renderer { get; set; }
 
     /// <summary>
     /// Creates a new SequenceImage and starts rendering at position 0.
@@ -165,17 +168,24 @@ public class SequenceImage : IDisposable
     /// <param name="sequence">The sequence used</param>
     /// <param name="startLine">The line to start the view from</param>
     /// <param name="sectionHeight">The height (in lines) of an individual sequence part.</param>
-    public SequenceImage(Sequence sequence, long startLine, long sectionHeight = 1000)
+    public SequenceImage(ISequence sequence, long startLine, SequenceRenderer renderer, long sectionHeight = 1000)
     {
         _sectionHeight = sectionHeight;
-        startLine = Math.Clamp(startLine, 0, sequence.Shape.Height);
+        _startLine = Math.Clamp(startLine, 0, sequence.Shape.Height);
         _sequence = sequence;
         _minPreloadedSections = (int)Math.Min(_minPreloadedSections,
             Math.Floor((double)_sequence.Shape.Height / _sectionHeight));
         _minPreloadedSections = Math.Max(_minPreloadedSections, 1);
+        Renderer = renderer;
+
+        _InitPreviews();
+    }
+
+    private void _InitPreviews()
+    {
         for (var i = 0; i < _minPreloadedSections; i++)
         {
-            _sequenceParts.Add(new SequencePart(_sequence, this, i * _sectionHeight + startLine));
+            _sequenceParts.Add(new SequencePart(_sequence, this, i * _sectionHeight + _startLine));
 
             var height = Math.Min(_sectionHeight,
                 _sequence.Shape.Height - (_sequenceParts.Count > 1 ? _sequenceParts[^1].YEnd : 0));
@@ -256,6 +266,18 @@ public class SequenceImage : IDisposable
         }
     }
 
+    public void Reset()
+    {
+        // doing cleanup
+        for (var i = _sequenceParts.Count - 1; i >= 0; i--)
+        {
+            _sequenceParts[i].Dispose();
+            _sequenceParts.RemoveAt(i);
+        }
+
+        _InitPreviews();
+    }
+
     public void Dispose()
     {
         // doing cleanup
@@ -284,12 +306,6 @@ public class SequenceImage : IDisposable
         int height,
         CancellationTokenSource? tokenSource = null)
     {
-        // TODO: change
-        SequenceRenderer renderer = new ChannelMapRenderer(0, 255, 2, 1, 0);
-        /*
-        renderer = new HeatMapRendererRB(0, 1, 1);
-        */
-
         // clamping all values
         startX = Math.Clamp(startX, 0, _sequence.Shape.Width);
         endX = Math.Clamp(endX, 0, _sequence.Shape.Width);
@@ -318,7 +334,7 @@ public class SequenceImage : IDisposable
                     var line = startLine + j * (endLine - startLine) / height;
 
                     // rendering each pixel using a renderer
-                    var data = renderer.RenderPixels(_sequence, xs, line, tokenSource);
+                    var data = Renderer.RenderPixels(_sequence, xs, line, tokenSource);
 
                     var span = bitmap.GetPixelSpan();
                     var pixels = MemoryMarshal.Cast<byte, BGRA>(span);

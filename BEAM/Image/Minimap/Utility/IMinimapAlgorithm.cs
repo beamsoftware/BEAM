@@ -9,7 +9,7 @@ public interface IMinimapAlgorithm
     /// </summary>
     /// <param name="sequence"> The sequence based on which the values are being calculated.</param>
     /// <returns> A Boolean representing whether the generation finished successfully.</returns>
-    bool AnalyzeSequence(Sequence sequence);
+    bool AnalyzeSequence(ISequence sequence);
 
     /// <summary>
     /// Returns the algorithm calculation based value for a specific line. Commonly used for plotting.

@@ -4,16 +4,18 @@ using System.Runtime.Intrinsics;
 using BEAM.Image;
 using System.Threading;
 using BEAM.ImageSequence;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BEAM.Renderer;
 
-public abstract class SequenceRenderer
+public abstract partial class SequenceRenderer : ObservableObject, ICloneable
 {
-    protected int MinimumOfIntensityRange { get; init; }
-    protected int MaximumOfIntensityRange { get; init; }
-    protected int IntensityRange { get; init; }
+    [ObservableProperty] private double _minimumOfIntensityRange;
+    [ObservableProperty] private double _maximumOfIntensityRange;
 
-    private Dictionary<RenderTypes, SequenceRenderer> _mapRenderTypesToRenderers = new Dictionary<RenderTypes, SequenceRenderer>();
+    protected double IntensityRange => MaximumOfIntensityRange - MinimumOfIntensityRange;
+
+    private Dictionary<RenderTypes, SequenceRenderer> _mapRenderTypesToRenderers = new();
 
     // variables used for normalizeintensity simd
     private Vector256<double> minIntensities;
@@ -26,20 +28,24 @@ public abstract class SequenceRenderer
     /// </summary>
     /// <param name="minimumOfIntensityRange"></param>
     /// <param name="maximumOfIntensityRange"></param>
-    protected SequenceRenderer(int minimumOfIntensityRange, int maximumOfIntensityRange)
+    protected SequenceRenderer(double minimumOfIntensityRange, double maximumOfIntensityRange)
     {
         if (maximumOfIntensityRange <= minimumOfIntensityRange)
         {
             throw new ArgumentException("Given maximumOfIntensityRange must be greater than " +
                                         "to minimumOfIntensityRange for color intensities rendering.");
         }
+
         MinimumOfIntensityRange = minimumOfIntensityRange;
         MaximumOfIntensityRange = maximumOfIntensityRange;
-        IntensityRange = maximumOfIntensityRange - minimumOfIntensityRange;
 
-        minIntensities = Vector256.Create<double>(MinimumOfIntensityRange);
-        maxIntensities = Vector256.Create<double>(MaximumOfIntensityRange);
         multFactor = Vector256.Create<double>(255);
+
+        PropertyChanged += (s, e) =>
+        {
+            minIntensities = Vector256.Create<double>(MinimumOfIntensityRange);
+            maxIntensities = Vector256.Create<double>(MaximumOfIntensityRange);
+        };
     }
 
     protected Vector256<double> NormalizeIntensity(Vector256<double> intensities)
@@ -50,7 +56,8 @@ public abstract class SequenceRenderer
     public SequenceRenderer GetRenderer(RenderTypes renderType, int minimumOfIntensityRange,
         int maximumOfIntensityRange, double[] displayParameters)
     {
-        SequenceRenderer renderer = _mapRenderTypesToRenderers[renderType].Create(minimumOfIntensityRange, maximumOfIntensityRange, displayParameters);
+        SequenceRenderer renderer = _mapRenderTypesToRenderers[renderType]
+            .Create(minimumOfIntensityRange, maximumOfIntensityRange, displayParameters);
 
         return renderer;
     }
@@ -65,12 +72,18 @@ public abstract class SequenceRenderer
         _mapRenderTypesToRenderers.Add(RenderTypes.ArgMaxRendererGrey, new ArgMaxRendererGrey(0, 0));
     }
 
-    public abstract byte[] RenderPixel(Sequence sequence, long x, long y);
-    public abstract byte[,] RenderPixels(Sequence sequence, long[] xs, long y, CancellationTokenSource? tokenSource = null);
+    public abstract byte[] RenderPixel(ISequence sequence, long x, long y);
 
-    protected abstract RenderTypes GetRenderType();
+    public abstract byte[,] RenderPixels(ISequence sequence, long[] xs, long y,
+        CancellationTokenSource? tokenSource = null);
 
-    protected abstract SequenceRenderer Create(int minimumOfIntensityRange, int maximumOfIntensityRange, double[] displayParameters);
+    public abstract RenderTypes GetRenderType();
+
+    protected abstract SequenceRenderer Create(int minimumOfIntensityRange, int maximumOfIntensityRange,
+        double[] displayParameters);
 
     protected abstract bool CheckParameters(double[] displayParameters, IImage image);
+
+    public abstract string GetName();
+    public abstract object Clone();
 }

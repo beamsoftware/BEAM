@@ -42,5 +42,8 @@
       <Compile Update="Views\StatusWindow.axaml.cs">
         <DependentUpon>StatusWindow.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\ColorSettingsPopup.axaml.cs">
+        <DependentUpon>ColorSettingsPopup.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

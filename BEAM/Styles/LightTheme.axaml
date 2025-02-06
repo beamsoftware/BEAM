@@ -18,6 +18,7 @@
                     <Color x:Key="WindowFg">Black</Color>
 
                     <Color x:Key="Accent">CornflowerBlue</Color>
+                    <Color x:Key="AccentForeground">White</Color>
 
                     <Color x:Key="DockSeparatorColor">CornflowerBlue</Color>
 

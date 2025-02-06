@@ -42,7 +42,7 @@ public partial class MainWindow : Window
                 Console.WriteLine("False");
                 try
                 {
-                    vm.DockingVm.OpenSequenceView(Sequence.Open(path));
+                    vm.DockingVm.OpenSequenceView(DiskSequence.Open(path));
                 }
                 catch (Exception ex)
                 {
@@ -56,7 +56,7 @@ public partial class MainWindow : Window
 
         try
         {
-            vm.DockingVm.OpenSequenceView(Sequence.Open(list));
+            vm.DockingVm.OpenSequenceView(DiskSequence.Open(list));
         }
         catch (Exception exception)
         {

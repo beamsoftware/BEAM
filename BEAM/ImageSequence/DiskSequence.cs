@@ -12,7 +12,7 @@ namespace BEAM.ImageSequence;
 /// Loads and manages an entire sequence.
 /// </summary>
 /// <param name="imagePaths">The paths of the images to use inside the sequence.</param>
-public abstract class Sequence(List<string> imagePaths) : IImage
+public abstract class DiskSequence(List<string> imagePaths, string name) : ISequence
 {
     /// Do not use -> set internally on first get
     private long? _singleFileHeight;
@@ -93,6 +93,11 @@ public abstract class Sequence(List<string> imagePaths) : IImage
 
         var img = GetImage((int)imageIdx);
         return img.GetPixelLineData(xs, imageLine, channels);
+    }
+
+    public string GetName()
+    {
+        return name;
     }
 
     private Mutex _loadedImagesMutex = new();
@@ -184,10 +189,11 @@ public abstract class Sequence(List<string> imagePaths) : IImage
     /// Opens a new sequence.
     /// </summary>
     /// <param name="paths">The image paths the sequence uses.</param>
+    /// <param name="name">The name of the sequence.</param>
     /// <returns>The sequence</returns>
     /// <exception cref="EmptySequenceException">Thrown when no images are being passed or all found file extensions are unsupported</exception>
     /// <exception cref="UnknownSequenceException">Thrown when no suitable sequence can be found in the paths</exception>
-    public static Sequence Open(List<string> paths)
+    public static DiskSequence Open(List<string> paths, string name)
     {
         if (paths.Count == 0) throw new EmptySequenceException("Empty sequences are not supported");
 
@@ -196,7 +202,7 @@ public abstract class Sequence(List<string> imagePaths) : IImage
         {
             if (!SequenceTypes.TryGetValue(extension, out var type)) continue;
 
-            var sequence = _InstantiateFromType(type, paths);
+            var sequence = _InstantiateFromType(type, paths, name);
             if (!sequence.InitializeSequence())
             {
                 throw new InvalidSequenceException("Sequence could not be loaded due to error (see log)!");
@@ -215,7 +221,7 @@ public abstract class Sequence(List<string> imagePaths) : IImage
     /// <returns>The opened sequence</returns>
     /// <exception cref="EmptySequenceException">Thrown when no images are being passed or all found file extensions are unsupported.</exception>
     /// <exception cref="UnknownSequenceException">Thrown when the folder does not exist.</exception>
-    public static Sequence Open(string folder)
+    public static DiskSequence Open(string folder)
     {
         if (!Directory.Exists(folder)) throw new UnknownSequenceException($"Cannot find folder: {folder}");
 
@@ -223,7 +229,7 @@ public abstract class Sequence(List<string> imagePaths) : IImage
 
         var pathList = filePaths.Order().ToList();
 
-        return Open(pathList);
+        return Open(pathList, Path.GetDirectoryName(folder) ?? folder);
     }
 
     /// <summary>
@@ -232,9 +238,10 @@ public abstract class Sequence(List<string> imagePaths) : IImage
     /// <param name="paths">The image paths the sequence uses.</param>
     /// <returns>The sequence</returns>
     /// <exception cref="UnknownSequenceException">Thrown when no suitable sequence can be found in the paths</exception>
-    public static Sequence Open(List<Uri> paths)
+    public static DiskSequence Open(List<Uri> paths)
     {
-        return Open(paths.Select(u => u.LocalPath).ToList());
+        var name = string.Join(", ", paths.Select(p => Path.GetFileName(p.AbsolutePath)));
+        return Open(paths.Select(u => u.LocalPath).ToList(), name);
     }
 
     /// <summary>
@@ -243,7 +250,7 @@ public abstract class Sequence(List<string> imagePaths) : IImage
     /// <param name="folder">The uri to the folder with the sequence inside</param>
     /// <returns>The opened sequence</returns>
     /// <exception cref="UnknownSequenceException">Thrown when the folder does not exist.</exception>
-    public static Sequence Open(Uri folder)
+    public static DiskSequence Open(Uri folder)
     {
         Console.WriteLine(folder.ToString());
         return Open(folder.LocalPath);
@@ -255,21 +262,21 @@ public abstract class Sequence(List<string> imagePaths) : IImage
     /// <param name="type">The type of the sequence.</param>
     /// <param name="paths">The paths of the used images.</param>
     /// <returns>The sequence object</returns>
-    private static Sequence _InstantiateFromType(Type type, List<string> paths)
+    private static DiskSequence _InstantiateFromType(Type type, List<string> paths, string name)
     {
-        if (!type.IsSubclassOf(typeof(Sequence)))
+        if (!type.IsSubclassOf(typeof(DiskSequence)))
         {
             throw new CriticalBeamException($"{type} is not a subclass of Sequence!");
         }
 
         // opens constructor with List<string> as parameter (main constructor of Sequence)
-        var ctor = type.GetConstructor([typeof(List<string>)]);
+        var ctor = type.GetConstructor([typeof(List<string>), typeof(string)]);
         if (ctor is null)
         {
             throw new CriticalBeamException($"Correct sequence constructor for {type} is not found!");
         }
 
-        return (Sequence)ctor.Invoke([paths]);
+        return (DiskSequence)ctor.Invoke([paths, name]);
     }
 
     private void ReleaseUnmanagedResources()
@@ -297,7 +304,7 @@ public abstract class Sequence(List<string> imagePaths) : IImage
         GC.SuppressFinalize(this);
     }
 
-    ~Sequence()
+    ~DiskSequence()
     {
         Dispose(false);
     }

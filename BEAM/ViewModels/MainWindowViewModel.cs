@@ -55,7 +55,7 @@ public partial class MainWindowViewModel : ViewModelBase
         var list = files.Select(f => f.Path).ToList();
         try
         {
-            DockingVm.OpenSequenceView(Sequence.Open(list));
+            DockingVm.OpenSequenceView(DiskSequence.Open(list));
         }
         catch (Exception ex)
         {
@@ -71,7 +71,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         try
         {
-            DockingVm.OpenSequenceView(Sequence.Open(folder.Path));
+            DockingVm.OpenSequenceView(DiskSequence.Open(folder.Path));
         }
         catch (Exception ex)
         {
