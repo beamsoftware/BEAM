@@ -1,7 +1,11 @@
 using BEAM.ImageSequence;
 
-namespace BEAM.Image.Minimap.Utility;
+namespace BEAM.Image.Minimap.MinimapAlgorithms;
 
+/// <summary>
+/// An algorithm which calculates values for each pixel line in a sequence.
+/// How and based on which parameters these values are being calculated are heavily depended on the concrete implementation.
+/// </summary>
 public interface IMinimapAlgorithm
 {
     /// <summary>

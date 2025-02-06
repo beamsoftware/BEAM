@@ -25,8 +25,10 @@ public sealed class BitmapPlottable(Sequence sequence, long startLine=0) : IPlot
 
     public void Render(RenderPack rp)
     {
+        
+        
         rp.Plot.Axes.InvertY();
-
+        
         // min <-> max flipped since inverted Y axis
         var minY = rp.Plot.Grid.YAxis.Max;
         var maxY = rp.Plot.Grid.YAxis.Min;

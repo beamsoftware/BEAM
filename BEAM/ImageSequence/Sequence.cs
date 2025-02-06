@@ -143,7 +143,7 @@ public abstract class Sequence(List<string> imagePaths) : IImage
 
     /// <summary>
     /// Calculates the shape of the entire sequence.
-    /// Only run once: when Shape is accessed the first tie
+    /// Only run once: when Shape is accessed the first time
     /// </summary>
     private void _InitializeShape()
     {

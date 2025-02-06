@@ -8,6 +8,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using BEAM.ImageSequence;
+using BEAM.ImageSequence.Synchronization;
+using BEAM.ImageSequence.Synchronization.Manipulators;
 using BEAM.Log;
 using BEAM.Models;
 using BEAM.Views;
@@ -30,6 +32,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] public partial string Copy { get; set; } = BaseConfig.Copy;
     [ObservableProperty] public partial string Help { get; set; } = BaseConfig.Help;
     [ObservableProperty] public partial string View { get; set; } = BaseConfig.View;
+    [ObservableProperty] public partial string Synchro { get; set; } = BaseConfig.Synchro;
+    [ObservableProperty] public partial string ActivateSynchro { get; set; } = BaseConfig.ActivateSynchro;
+    [ObservableProperty] public partial string DeactivateSynchro { get; set; } = BaseConfig.DeactivateSynchro;
     [ObservableProperty] public partial string ViewOpenStatusWindow { get; set; } = BaseConfig.ViewOpenStatusWindow;
 
     [ObservableProperty] private string? _fileText;
@@ -39,10 +44,14 @@ public partial class MainWindowViewModel : ViewModelBase
     public static int TitleBarHeight => 38;
 
     private Logger? _logger;
+    private SyncedPlotController? _syncedPlotController;
 
     public MainWindowViewModel()
     {
         _logger = Logger.GetInstance();
+        _syncedPlotController = new SyncedPlotController();
+        _syncedPlotController.Register(new MouseManipulator());
+        PlotControllerManager.RegisterController(_syncedPlotController);
     }
 
     [RelayCommand]
@@ -150,5 +159,19 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var aboutWindow = new AboutWindow();
         aboutWindow.Show();
+    }
+    
+    [RelayCommand]
+    public void ActivateSynchronization()
+    {
+        _syncedPlotController?.activate();
+        ScrollingSynchronizer.IsSynchronizing = true;
+    }
+    
+    [RelayCommand]
+    public void DeactivateSynchronization()
+    {
+        _syncedPlotController?.deactivate();
+        ScrollingSynchronizer.IsSynchronizing = false;
     }
 }

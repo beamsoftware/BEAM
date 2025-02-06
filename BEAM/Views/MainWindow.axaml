@@ -49,6 +49,12 @@
                     <NativeMenuItem Header="{Binding Help}" Command="{Binding OpenAboutWindowCommand}"/>
                 </NativeMenu>
             </NativeMenuItem>
+            <NativeMenuItem Header = "{Binding Synchro}">
+                <NativeMenu>
+                    <NativeMenuItem Header="{Binding ActivateSynchro}" Command="{Binding ActivateSynchronizationCommand}"></NativeMenuItem>
+                    <NativeMenuItem Header="{Binding DeactivateSynchro}" Command="{Binding DeactivateSynchronizationCommand}"></NativeMenuItem>
+                </NativeMenu>
+            </NativeMenuItem>
         </NativeMenu>
 
     </NativeMenu.Menu>

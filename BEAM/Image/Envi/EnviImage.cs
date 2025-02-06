@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.IO.MemoryMappedFiles;
+using System.Reflection;
 
 namespace BEAM.Image.Envi;
 
@@ -297,7 +298,7 @@ public static class EnviImage
         var datatype = header.Get<EnviDataType>("data type");
 
         var type = datatype.TypeOf();
-        var ctor = typeof(EnviImage<>).MakeGenericType([type]).GetConstructor([typeof(string)])!;
+        ConstructorInfo ctor = typeof(EnviImage<>).MakeGenericType([type]).GetConstructor([typeof(string)])!;
         return (IMemoryImage)ctor.Invoke([filepath]);
     }
 }
