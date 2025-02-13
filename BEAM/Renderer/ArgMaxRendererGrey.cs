@@ -19,14 +19,14 @@ public class ArgMaxRendererGrey(double minimumOfIntensityRange, double maximumOf
         return new ArgMaxRendererGrey(minimumOfIntensityRange, maximumOfIntensityRange);
     }
 
-    protected override bool CheckParameters(double[] displayParameters, IImage image)
+    protected override bool CheckParameters(double[] displayParameters)
     {
         return displayParameters.Length == 0;
     }
 
     public override object Clone()
     {
-        return new ArgMaxRendererGrey(minimumOfIntensityRange, maximumOfIntensityRange);
+        return new ArgMaxRendererGrey(MinimumOfIntensityRange, MaximumOfIntensityRange);
     }
 
     /// <summary>

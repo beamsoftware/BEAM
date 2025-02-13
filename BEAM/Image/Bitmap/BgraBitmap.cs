@@ -52,7 +52,7 @@ public sealed partial class BgraBitmap : SKBitmap, IBitmap<BGRA>
   /// to the less permissive SKBitmap superclass.
   /// </summary>
   /// <returns>A byte span to the memory region of the pixel data.</returns>
-  public unsafe Span<byte> GetPixelSpan()
+  public new unsafe Span<byte> GetPixelSpan()
   { 
     IntPtr length;
     return new Span<byte>((void*) base.GetPixels(out length), (int)length);

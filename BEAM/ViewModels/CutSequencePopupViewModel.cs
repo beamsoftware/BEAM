@@ -8,18 +8,21 @@ namespace BEAM.ViewModels;
 public partial class CutSequencePopupViewModel : ViewModelBase
 {
     private readonly SequenceViewModel _sequenceViewModel;
-    [ObservableProperty] public long offset = 0;
-    [ObservableProperty] public long maxOffset = 0;
+    [ObservableProperty]
+    public partial long Offset { get; set; } = 0;
+
+    [ObservableProperty]
+    public partial long MaxOffset { get; set; }
 
     public CutSequencePopupViewModel(SequenceViewModel model)
     {
         _sequenceViewModel = model;
-        maxOffset = _sequenceViewModel.Sequence.Shape.Height - 1;
+        MaxOffset = _sequenceViewModel.Sequence.Shape.Height - 1;
     }
     
     public bool Save()
     {
-        if (Offset < 0 || Offset > maxOffset)
+        if (Offset < 0 || Offset > MaxOffset)
         {
             return false;
         }   

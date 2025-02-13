@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 using System;
-using BEAM.Log;
+using BEAM.Models.Log;
 using BEAM.Profiling;
 
 namespace BEAM;

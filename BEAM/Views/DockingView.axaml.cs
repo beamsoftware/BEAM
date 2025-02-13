@@ -21,7 +21,7 @@ public partial class DockingView : UserControl
         DataContextChanged += (s, e) =>
         {
             if (!IsInitialized) return;
-            var vm = DataContext as DockingViewModel;
+            var vm = (DockingViewModel)DataContext!;
             vm.Items.CollectionChanged += _ItemsOnCollectionChanged;
         };
 

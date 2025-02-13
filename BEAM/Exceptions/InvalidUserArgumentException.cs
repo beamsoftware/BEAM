@@ -1,4 +1,4 @@
-﻿using BEAM.Log;
+﻿using BEAM.Models.Log;
 
 namespace BEAM.Exceptions;
 
@@ -12,10 +12,6 @@ public class InvalidUserArgumentException : BeamException
     }
 
     public InvalidUserArgumentException(string message) : base(message)
-    {
-    }
-
-    public InvalidUserArgumentException(LogEvent evt, string message) : base(evt, message)
     {
     }
 }

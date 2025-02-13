@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using BEAM.Exceptions;
 using BEAM.ImageSequence;
 
@@ -23,7 +24,7 @@ public abstract class ArgMaxRenderer(double minimumOfIntensityRange, double maxi
     }
 
     //TODO: implement. Currently do not understand LineImage
-    public override byte[,] RenderPixels(ISequence sequence, long[] xs, long y, CancellationTokenSource? tokenSource = null)
+    public override byte[,] RenderPixels(ISequence sequence, long[] xs, long y)
     {
         throw new System.NotImplementedException();
     }
@@ -33,12 +34,12 @@ public abstract class ArgMaxRenderer(double minimumOfIntensityRange, double maxi
     /// </summary>
     /// <param name="channels"></param>
     /// <returns></returns>
-    /// <exception cref="ChannelException"></exception>
+    /// <exception cref="ArgumentException">When channels is empty</exception>
     private int ArgMax(double[] channels)
     {
-        if (channels.Length <= 0)
+        if (channels.Length == 0)
         {
-            throw new ChannelException("Channels must be greater than 0.");
+            throw new ArgumentException("Amount of channels must be greater than 0.");
         }
         
         double maxIntensity = MinimumOfIntensityRange;

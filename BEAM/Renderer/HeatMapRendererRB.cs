@@ -72,7 +72,7 @@ public class HeatMapRendererRB : HeatMapRenderer
     protected override SequenceRenderer Create(int minimumOfIntensityRange, int maximumOfIntensityRange, double[] displayParameters)
     {
         // TODO remove null
-        if (!CheckParameters(displayParameters, null))
+        if (!CheckParameters(displayParameters))
         {
             throw new InvalidUserArgumentException("Display parameters are invalid.");
         };
@@ -81,7 +81,7 @@ public class HeatMapRendererRB : HeatMapRenderer
     }
 
     //TODO: Check if channel is in range for given Image, not possible yet, if image not attribute
-    protected override bool CheckParameters(double[] displayParameters, IImage image)
+    protected override bool CheckParameters(double[] displayParameters)
     {
         if (displayParameters.Length != 3
             || displayParameters[0] < 0 // the channel

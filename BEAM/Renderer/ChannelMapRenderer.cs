@@ -62,15 +62,13 @@ public partial class ChannelMapRenderer : SequenceRenderer
     /// <param name="xs"></param>
     /// <param name="y"></param>
     /// <returns>[x, argb]</returns>
-    public override byte[,] RenderPixels(ISequence sequence, long[] xs, long y,
-        CancellationTokenSource? tokenSource = null)
+    public override byte[,] RenderPixels(ISequence sequence, long[] xs, long y)
     {
         var data = new byte[xs.Length, 4];
         var img = sequence.GetPixelLineData(xs, y, [ChannelBlue, ChannelGreen, ChannelRed]);
 
         for (var x = 0; x < xs.Length; x++)
         {
-            tokenSource?.Token.ThrowIfCancellationRequested();
             var colors = NormailizeIntensity(Vector256.Create([
                 img.GetPixel(x, 0, 0),
                 img.GetPixel(x, 0, 1),
@@ -99,8 +97,7 @@ public partial class ChannelMapRenderer : SequenceRenderer
     protected override SequenceRenderer Create(int minimumOfIntensityRange, int maximumOfIntensityRange,
         double[] displayParameters)
     {
-        // TODO remove null
-        if (!CheckParameters(displayParameters, null))
+        if (!CheckParameters(displayParameters))
         {
             throw new InvalidUserArgumentException("Display parameters are invalid.");
         }
@@ -120,9 +117,8 @@ public partial class ChannelMapRenderer : SequenceRenderer
     /// Returns True, if the parameters are valid, false otherwise.
     /// </summary>
     /// <param name="displayParameters"></param>
-    /// <param name="image"></param>
     /// <returns></returns>
-    protected override bool CheckParameters(double[] displayParameters, IImage image)
+    protected override bool CheckParameters(double[] displayParameters)
     {
         return displayParameters.Length == 3
                && !(displayParameters[0] < 0)

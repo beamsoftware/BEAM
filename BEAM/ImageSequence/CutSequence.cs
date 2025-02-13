@@ -12,35 +12,34 @@ namespace BEAM.ImageSequence;
 /// <param name="originalSequence">The original Sequence</param>
 public class CutSequence(string name, long offset, ISequence originalSequence) : ISequence
 {
-    
     private ImageShape? _shape;
-    
-    public new double GetPixel(long x, long y, int channel)
+
+    public double GetPixel(long x, long y, int channel)
     {
         return originalSequence.GetPixel(x, y + offset, channel);
     }
-    
-    public new double[] GetPixel(long x, long y)
+
+    public double[] GetPixel(long x, long y)
     {
         return originalSequence.GetPixel(x, y + offset);
     }
-    
-    public new double[] GetPixel(long x, long y, int[] channels)
+
+    public double[] GetPixel(long x, long y, int[] channels)
     {
         return originalSequence.GetPixel(x, y + offset, channels);
     }
-    
-    public new LineImage GetPixelLineData(long line, int[] channels)
+
+    public LineImage GetPixelLineData(long line, int[] channels)
     {
         return originalSequence.GetPixelLineData(line + offset, channels);
     }
-    
+
     public LineImage GetPixelLineData(long[] xs, long line, int[] channels)
     {
         return originalSequence.GetPixelLineData(xs, line + offset, channels);
     }
 
-    public new string GetName()
+    public string GetName()
     {
         return name;
     }
@@ -55,10 +54,10 @@ public class CutSequence(string name, long offset, ISequence originalSequence) :
             }
 
             _InitializeShape();
-            return _shape.Value;
+            return _shape!.Value;
         }
     }
-    
+
     private void _InitializeShape()
     {
         var originalShape = originalSequence.Shape;

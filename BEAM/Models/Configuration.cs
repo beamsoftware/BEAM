@@ -31,7 +31,7 @@ public class Configuration(string version, Language language, string file, strin
             var config = JsonSerializer.Deserialize<Configuration>(json);
             return config ?? StandardEnglish();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return StandardEnglish();
         }

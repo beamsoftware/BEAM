@@ -86,8 +86,7 @@ public abstract class HeatMapRenderer : SequenceRenderer
             IntensityRange * RelMinHottestIntensity + MinimumOfIntensityRange);
     }
 
-    public override byte[,] RenderPixels(ISequence sequence, long[] xs, long y,
-        CancellationTokenSource? tokenSource = null)
+    public override byte[,] RenderPixels(ISequence sequence, long[] xs, long y)
     {
         var data = new byte[xs.Length, 4];
         var img = sequence.GetPixelLineData(xs, y, [Channel]);
@@ -95,8 +94,6 @@ public abstract class HeatMapRenderer : SequenceRenderer
         // TODO: SIMD
         for (var i = 0; i < xs.Length; i++)
         {
-            tokenSource?.Token.ThrowIfCancellationRequested();
-
             var color = GetColor(img.GetPixel(i, 0, 0), MinimumOfIntensityRange, MaximumOfIntensityRange);
             data[i, 0] = color[1];
             data[i, 1] = color[2];
