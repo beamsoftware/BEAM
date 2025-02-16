@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using BEAM.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace BEAM.Log;
+namespace BEAM.Models.Log;
 
 public partial class Logger : ObservableObject, ILog
 {
@@ -15,7 +13,7 @@ public partial class Logger : ObservableObject, ILog
     private LogLevel _logLevel;
     private LogEvent _logEvent;
 
-    private ObservableCollection<LogEntry> _LogEntries;
+    private ObservableCollection<Models.Log.LogEntry> _LogEntries;
 
     private Logger(string pathToLogFile)
     {
@@ -106,23 +104,19 @@ public partial class Logger : ObservableObject, ILog
     
     private void CreateNewLogFile(string pathToLogFile)
     {
-        using (FileStream fs = new FileStream(pathToLogFile, FileMode.CreateNew))
-        {
-            using (BinaryWriter w = new BinaryWriter(fs))
-            {
-                w.Write("New log file created at: " + DateTime.Now + "\n");
-            }
-        }
-            
+        using var fs = new FileStream(pathToLogFile, FileMode.CreateNew);
+        using var w = new BinaryWriter(fs);
+
+        w.Write("New log file created at: " + DateTime.Now + "\n");
     }
     
     private void Write(string message)
     {
-        using (StreamWriter outputFile = new StreamWriter(_pathToLogFile, true))
+        using (var outputFile = new StreamWriter(_pathToLogFile, true))
         {
             outputFile.WriteLine(DateTime.Now + " " +message);
         }
-        _LogEntries.Add(new LogEntry(_logLevel, Enum.GetName(_logEvent), message));
+        _LogEntries.Add(new LogEntry(_logLevel, Enum.GetName(_logEvent)!, message));
     }
     
     public void ClearStatusBar()
@@ -130,7 +124,7 @@ public partial class Logger : ObservableObject, ILog
         _LogEntries.Clear();
     }
     
-    public ObservableCollection<LogEntry> GetLogEntries()
+    public ObservableCollection<Models.Log.LogEntry> GetLogEntries()
     {
         return _LogEntries;
     }

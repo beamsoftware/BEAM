@@ -1,4 +1,4 @@
-namespace BEAM.Log;
+namespace BEAM.Models.Log;
 
 public enum LogLevel
 {

@@ -1,5 +1,5 @@
 using System;
-using BEAM.Log;
+using BEAM.Models.Log;
 
 namespace BEAM.Exceptions;
 
@@ -13,10 +13,6 @@ public class InvalidSequenceException : BeamException
     }
 
     public InvalidSequenceException(string message) : base(message)
-    {
-    }
-
-    public InvalidSequenceException(LogEvent evt, string message) : base(evt, message)
     {
     }
 }

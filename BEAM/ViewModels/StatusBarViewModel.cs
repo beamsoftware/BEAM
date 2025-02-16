@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Specialized;
 using System.IO.Pipelines;
-using BEAM.Log;
+using BEAM.Models.Log;
 using BEAM.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LogEntry = BEAM.Models.Log.LogEntry;
 
 namespace BEAM.ViewModels;
 

@@ -1,5 +1,5 @@
 using System.Net;
-using BEAM.Log;
+using BEAM.Models.Log;
 
 namespace BEAM.Tests;
 

@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using BEAM.Log;
 using BEAM.ViewModels;
 
 namespace BEAM.Views;

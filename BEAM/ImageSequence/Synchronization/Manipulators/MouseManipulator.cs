@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using BEAM.Log;
 using NP.Ava.Visuals;
 using ScottPlot;
 using ScottPlot.Avalonia;

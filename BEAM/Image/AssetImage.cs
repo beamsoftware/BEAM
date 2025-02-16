@@ -11,6 +11,6 @@ public class AssetImage(string assetUri) : SkiaImage<byte>(AssetLoader.Open(new 
 {
     public SKBitmap GetBitmap()
     {
-        return Data;
+        return Data!;
     }
 }

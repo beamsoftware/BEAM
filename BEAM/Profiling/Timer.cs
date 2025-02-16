@@ -13,7 +13,7 @@ public class TimerEventArgs(string name, Stopwatch watch)
 
 public class TimerScopeToken(string name, Stopwatch watch) : IDisposable
 {
-    public event TimerEndEvent OnTimerEnd;
+    public event TimerEndEvent OnTimerEnd = delegate { };
 
     public void Dispose()
     {
@@ -24,12 +24,12 @@ public class TimerScopeToken(string name, Stopwatch watch) : IDisposable
 
 public static class Timer
 {
-    public static event TimerEndEvent TimerEnd;
+    public static event TimerEndEvent TimerEnd = delegate { };
 
-    public static TimerScopeToken Start(string? name=null)
+    public static TimerScopeToken Start(string? name = null)
     {
-        var method = new StackFrame(1).GetMethod();
-        var className = method.DeclaringType.Name;
+        var method = new StackFrame(1).GetMethod()!;
+        var className = method.DeclaringType!.Name;
         var ns = method.DeclaringType.Namespace;
 
         var token = new TimerScopeToken(name ?? $"{ns}.{className}.{method.Name}()", Stopwatch.StartNew());

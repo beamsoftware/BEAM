@@ -46,5 +46,11 @@
       <Compile Update="Views\ColorSettingsPopup.axaml.cs">
         <DependentUpon>ColorSettingsPopup.axaml</DependentUpon>
       </Compile>
+      <Compile Remove="Controls\ArgMaxConfigControlView.axaml.cs" />
+      <Compile Remove="Controls\ArgMaxConfigControlViewModel.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaXaml Remove="Controls\ArgMaxConfigControlView.axaml" />
     </ItemGroup>
 </Project>
