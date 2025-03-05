@@ -13,5 +13,6 @@ public enum LogEvent
     ExportedFile,
     BasicMessage,
     ThrownException,
-    Critical
+    Critical,
+    Analysis
 }

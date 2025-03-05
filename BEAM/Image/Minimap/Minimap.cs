@@ -19,7 +19,7 @@ public abstract class Minimap
 
 {
     /// <summary>
-    /// The sequence based on which the minimap is based.
+    /// The sequence on which the minimap is based.
     /// </summary>
     protected ISequence? Sequence;
     protected bool IsGenerated { get; set; }
