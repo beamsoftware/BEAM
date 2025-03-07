@@ -5,6 +5,7 @@ using BEAM.Image;
 using BEAM.Image.Skia;
 using BEAM.Models.Log;
 using BEAM.Profiling;
+using BEAM.Renderer;
 using SkiaSharp;
 
 namespace BEAM.ImageSequence;
@@ -15,6 +16,10 @@ namespace BEAM.ImageSequence;
 /// <param name="imagePaths">The skia images to use inside the sequence</param>
 public class SkiaSequence(List<string> imagePaths, string name) : DiskSequence(imagePaths, name)
 {
+    public override (double min, double max) GetDefaultMinMaxValues() => (0, 255);
+
+    public override RenderTypes GetDefaultRenderType() => RenderTypes.ChannelMapRenderer;
+
     protected internal override IImage LoadImage(int index) => new SkiaImage<byte>(ImagePaths[index]);
 
     protected internal override bool InitializeSequence()

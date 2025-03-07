@@ -14,7 +14,12 @@ public abstract partial class SequenceRenderer : ObservableObject, ICloneable
 
     protected double IntensityRange => MaximumOfIntensityRange - MinimumOfIntensityRange;
 
-    private readonly Dictionary<RenderTypes, SequenceRenderer> _mapRenderTypesToRenderers = new();
+    private static readonly Dictionary<RenderTypes, SequenceRenderer> _mapRenderTypesToRenderers = new(){
+        [RenderTypes.HeatMapRendererRb] = new HeatMapRendererRB(0, 0, 0, 0, 0),
+        [RenderTypes.ChannelMapRenderer] = new ChannelMapRenderer(0, 0, 0, 0, 0),
+        [RenderTypes.ArgMaxRendererGrey] = new ArgMaxRendererGrey(0, 0),
+        [RenderTypes.ArgMaxRendererColorHsva] = new ArgMaxRendererColorHSV(0, 0),
+    };
 
     // variables used for NormalizeIntensity
     private Vector256<double> _minIntensities;
@@ -52,23 +57,13 @@ public abstract partial class SequenceRenderer : ObservableObject, ICloneable
         return (intensities - _minIntensities) / (_maxIntensities - _minIntensities) * _multFactor;
     }
 
-    public SequenceRenderer GetRenderer(RenderTypes renderType, int minimumOfIntensityRange,
+    public static SequenceRenderer GetRenderer(RenderTypes renderType, int minimumOfIntensityRange,
         int maximumOfIntensityRange, double[] displayParameters)
     {
         SequenceRenderer renderer = _mapRenderTypesToRenderers[renderType]
             .Create(minimumOfIntensityRange, maximumOfIntensityRange, displayParameters);
 
         return renderer;
-    }
-
-    /// <summary>
-    /// Fill the dictionary with default renderers to map the Enums of RenderTypes to their specific classes.
-    /// </summary>
-    private void InitializeMapRenderTypesToRenderers()
-    {
-        _mapRenderTypesToRenderers.Add(RenderTypes.HeatMapRendererRb, new HeatMapRendererRB(0, 0, 0, 0, 0));
-        _mapRenderTypesToRenderers.Add(RenderTypes.ChannelMapRenderer, new ChannelMapRenderer(0, 0, 0, 0, 0));
-        _mapRenderTypesToRenderers.Add(RenderTypes.ArgMaxRendererGrey, new ArgMaxRendererGrey(0, 0));
     }
 
     public abstract BGR RenderPixel(ISequence sequence, long x, long y);

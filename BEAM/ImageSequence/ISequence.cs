@@ -1,4 +1,5 @@
 using BEAM.Image;
+using BEAM.Renderer;
 
 namespace BEAM.ImageSequence;
 
@@ -13,4 +14,7 @@ public interface ISequence : IImage
     /// </summary>
     /// <returns>The name of the sequence</returns>
     public string GetName();
+
+    public (double min, double max) GetDefaultMinMaxValues();
+    public RenderTypes GetDefaultRenderType();
 }
