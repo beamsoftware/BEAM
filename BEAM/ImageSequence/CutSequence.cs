@@ -1,5 +1,6 @@
 using System;
 using BEAM.Image;
+using BEAM.Renderer;
 
 namespace BEAM.ImageSequence;
 
@@ -43,6 +44,9 @@ public class CutSequence(string name, long startOffset, long endOffset, ISequenc
     {
         return name;
     }
+
+    public (double min, double max) GetDefaultMinMaxValues() => originalSequence.GetDefaultMinMaxValues();
+    public RenderTypes GetDefaultRenderType() => originalSequence.GetDefaultRenderType();
 
     public ImageShape Shape
     {

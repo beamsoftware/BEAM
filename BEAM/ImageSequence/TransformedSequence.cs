@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using BEAM.Image;
+using BEAM.Renderer;
 
 namespace BEAM.ImageSequence;
 
@@ -67,6 +68,9 @@ public class TransformedSequence(ISequence originalSequence) : ISequence
     {
         return originalSequence.GetName();
     }
+
+    public (double min, double max) GetDefaultMinMaxValues() => originalSequence.GetDefaultMinMaxValues();
+    public RenderTypes GetDefaultRenderType() => originalSequence.GetDefaultRenderType();
 
     public void Dispose()
     {

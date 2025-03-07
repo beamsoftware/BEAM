@@ -92,16 +92,10 @@ public partial class SequenceViewModel : ViewModelBase, IDockBase
     public SequenceViewModel(ISequence sequence, DockingViewModel dockingVm)
     {
         Sequence = new TransformedSequence(sequence);
-        DockingVm = dockingVm;
 
         DockingVm = dockingVm;
 
-        var (min, max) = sequence switch
-        {
-            SkiaSequence => (0, 255),
-            _ => (0, 1)
-        };
-
+        var (min, max) = sequence.GetDefaultMinMaxValues();
         Renderers =
         [
             new ChannelMapRenderer(min, max, 2, 1, 0),
@@ -110,12 +104,14 @@ public partial class SequenceViewModel : ViewModelBase, IDockBase
             new ArgMaxRendererColorHSV(min, max)
         ];
 
-        RendererSelection = sequence switch
+        RendererSelection = 0;
+        for (var i = 0; i < Renderers.Length; i++)
         {
-            SkiaSequence => 0,
-            _ => 1
-        };
-        
+            if (Renderers[i].GetRenderType() != sequence.GetDefaultRenderType()) continue;
+            RendererSelection = i;
+            break;
+        }
+
         _currentMinimap = SettingsUtilityHelper<Image.Minimap.Minimap>.GetDefaultClones().Active;
         if (_currentMinimap is not null)
         {

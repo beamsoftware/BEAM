@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using BEAM.Exceptions;
 using BEAM.Image;
+using BEAM.Renderer;
 
 namespace BEAM.ImageSequence;
 
@@ -101,6 +102,10 @@ public abstract class DiskSequence(List<string> imagePaths, string name) : ISequ
     {
         return name;
     }
+
+    public abstract (double min, double max) GetDefaultMinMaxValues();
+
+    public abstract RenderTypes GetDefaultRenderType();
 
     private readonly Mutex _loadedImagesMutex = new();
     private readonly IImage?[] _loadedImages = new IImage?[imagePaths.Count];
