@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using BEAM.Exceptions;
 using BEAM.Image;
+using BEAM.Renderer.Attributes;
 
 namespace BEAM.ImageSequence;
 

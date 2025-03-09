@@ -1,6 +1,9 @@
 ﻿using System;
+using BEAM.Controls;
 using BEAM.Datatypes.Color;
 using BEAM.Exceptions;
+using BEAM.ViewModels;
+using BEAM.Views.Utility;
 
 namespace BEAM.Renderer;
 
@@ -96,5 +99,10 @@ public class HeatMapRendererRB : HeatMapRenderer
     public override object Clone()
     {
         return new HeatMapRendererRB(MinimumOfIntensityRange, MaximumOfIntensityRange, Channel, RelMinHottestIntensity, RelMinHottestIntensity);
+    }
+
+    public override SaveUserControl GetConfigView(SequenceViewModel baseVm)
+    {
+        return new HeatMapConfigControlView(this, baseVm);
     }
 }

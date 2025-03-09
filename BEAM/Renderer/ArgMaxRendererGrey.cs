@@ -1,4 +1,6 @@
 ﻿using BEAM.Datatypes.Color;
+using BEAM.ViewModels;
+using BEAM.Views.Utility;
 
 namespace BEAM.Renderer;
 
@@ -27,6 +29,11 @@ public class ArgMaxRendererGrey(double minimumOfIntensityRange, double maximumOf
     public override object Clone()
     {
         return new ArgMaxRendererGrey(MinimumOfIntensityRange, MaximumOfIntensityRange);
+    }
+
+    public override SaveUserControl? GetConfigView(SequenceViewModel baseVm)
+    {
+        return null;
     }
 
     /// <summary>

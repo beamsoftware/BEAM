@@ -19,6 +19,5 @@
         <ItemsControl ItemsSource="{Binding MinimapVms}" Grid.Column="2" LayoutUpdated="Layoutable_OnLayoutUpdated">
         </ItemsControl>
     </Grid>
-    
 </UserControl>
 

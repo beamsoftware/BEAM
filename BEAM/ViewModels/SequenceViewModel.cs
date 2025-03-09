@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
@@ -12,6 +14,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using BEAM.Renderer;
 using BEAM.Models.Log;
+using BEAM.Renderer.Attributes;
 using BEAM.Views.Minimap.Popups;
 
 
@@ -23,6 +26,8 @@ namespace BEAM.ViewModels;
 /// </summary>
 public partial class SequenceViewModel : ViewModelBase, IDockBase
 {
+    public const int DefaultSequenceRangeLowerBound = 0;
+    public const int DefaultSequenceRangeUpperBound = 1;
     public event EventHandler<CloseEventArgs> CloseEvent = delegate { };
 
     /// <summary>
@@ -95,26 +100,38 @@ public partial class SequenceViewModel : ViewModelBase, IDockBase
         DockingVm = dockingVm;
 
         DockingVm = dockingVm;
-
-        var (min, max) = sequence switch
+        int min = 0;
+        int max = 1;
+        ValueRangeAttribute range;
+        try
         {
-            SkiaSequence => (0, 255),
-            _ => (0, 1)
-        };
-
-        Renderers =
-        [
-            new ChannelMapRenderer(min, max, 2, 1, 0),
-            new HeatMapRendererRB(min, max, 0, 0.1, 0.9),
-            new ArgMaxRendererGrey(min, max),
-            new ArgMaxRendererColorHSV(min, max)
-        ];
-
-        RendererSelection = sequence switch
+            range = sequence.GetType().GetCustomAttributes<ValueRangeAttribute>().First();
+        }
+        catch (Exception ex) when (ex is TargetInvocationException or ReflectionTypeLoadException or IndexOutOfRangeException or InvalidOperationException)
         {
-            SkiaSequence => 0,
-            _ => 1
-        };
+            range = new ValueRangeAttribute(DefaultSequenceRangeLowerBound, DefaultSequenceRangeUpperBound);
+        }
+
+        min = range.Min;
+        max = range.Max;
+
+        RendererEnum selectedOption;
+        try
+        {
+            selectedOption = sequence.GetType().GetCustomAttributes<RendererAttribute>().First().DefaultRenderer;
+        }
+        catch (Exception ex) when (ex is TargetInvocationException or ReflectionTypeLoadException or IndexOutOfRangeException or InvalidOperationException)
+        {
+            selectedOption= RendererEnum.HeatMapRendererRB;
+        }
+
+        RendererSelection = (int)selectedOption;
+        var rendererOptions = Enum.GetValues(typeof(RendererEnum));
+        Renderers = new SequenceRenderer[rendererOptions.Length];
+        for(var i = 0; i < rendererOptions.Length; i++)
+        {
+            Renderers[i] = ((RendererEnum)((rendererOptions.GetValue(i)) ?? RendererEnum.ChannelMapRenderer)).Sequence(min, max);
+        }
         
         _currentMinimap = SettingsUtilityHelper<Image.Minimap.Minimap>.GetDefaultClones().Active;
         if (_currentMinimap is not null)

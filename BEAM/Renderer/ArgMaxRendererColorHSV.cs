@@ -4,6 +4,8 @@ using BEAM.Controls;
 using BEAM.Datatypes;
 using BEAM.Datatypes.Color;
 using BEAM.ImageSequence;
+using BEAM.ViewModels;
+using BEAM.Views.Utility;
 
 namespace BEAM.Renderer;
 
@@ -34,6 +36,11 @@ public class ArgMaxRendererColorHSV(double minimumOfIntensityRange, double maxim
     public override object Clone()
     {
         return new ArgMaxRendererColorHSV(MinimumOfIntensityRange, MaximumOfIntensityRange);
+    }
+
+    public override SaveUserControl GetConfigView(SequenceViewModel baseVm)
+    {
+        return new ArgMaxHSVConfigControlView(this, baseVm);
     }
 
     /// <summary>

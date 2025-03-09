@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using BEAM.Controls;
 using BEAM.Renderer;
+using BEAM.Views.Utility;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BEAM.ViewModels;
@@ -22,7 +23,7 @@ public partial class ColorSettingsPopupViewModel : ViewModelBase
 
     private int _selection;
 
-    private readonly List<ISaveControl> _controls = [];
+    private readonly List<SaveUserControl> _controls = [];
 
     /// <summary>
     /// The minimum value of the range of raw values the sequence is drawn at.
@@ -75,37 +76,21 @@ public partial class ColorSettingsPopupViewModel : ViewModelBase
     private StackPanel _BuildPanel(SequenceRenderer renderer)
     {
         var panel = new StackPanel() { Margin = new Thickness(30, 0, 0, 0) };
-
-        switch (renderer)
+        
+        SaveUserControl? configView = renderer.GetConfigView(_sequenceViewModel);
+        if (configView is null)
         {
-            case HeatMapRenderer htmRenderer:
-                var hmView = new HeatMapConfigControlView(htmRenderer, _sequenceViewModel);
-                panel.Children.Add(hmView);
-                _controls.Add(hmView);
-                break;
-            case ChannelMapRenderer chmRenderer:
-                var chmView = new ChannelMapConfigControlView(chmRenderer, _sequenceViewModel);
-                panel.Children.Add(chmView);
-                _controls.Add(chmView);
-                break;
-            case ArgMaxRendererGrey:
-                break;
-            case ArgMaxRendererColorHSV argmHSVRenderer:
-                var argmHSVView = new ArgMaxHSVConfigControlView(argmHSVRenderer, _sequenceViewModel);
-                panel.Children.Add(argmHSVView);
-                _controls.Add(argmHSVView);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(renderer));
+            return panel;
         }
-
+        panel.Children.Add(configView);
+        _controls.Add(configView);
         return panel;
     }
 
     /// <summary>
     /// Saves the current settings to the sequence renderers and redraws the sequence.
     /// </summary>
-    /// <returns>Whether the settings could be saved successfully</returns>
+    /// <returns>Whether the settings could be saved successfully.</returns>
     public bool Save()
     {
         foreach (var control in _controls)

@@ -1,7 +1,10 @@
 ﻿using System.Runtime.Intrinsics;
+using BEAM.Controls;
 using BEAM.Datatypes.Color;
 using BEAM.Exceptions;
 using BEAM.ImageSequence;
+using BEAM.ViewModels;
+using BEAM.Views.Utility;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BEAM.Renderer;
@@ -127,6 +130,11 @@ public partial class ChannelMapRenderer : SequenceRenderer
     {
         return new ChannelMapRenderer(MinimumOfIntensityRange, MaximumOfIntensityRange, ChannelRed, ChannelGreen,
             ChannelBlue);
+    }
+
+    public override SaveUserControl GetConfigView(SequenceViewModel baseVm)
+    {
+        return new ChannelMapConfigControlView(this, baseVm);
     }
 
     private new Vector256<double> NormalizeIntensity(Vector256<double> intensities)

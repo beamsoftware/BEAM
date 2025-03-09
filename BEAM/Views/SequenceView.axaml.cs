@@ -36,7 +36,7 @@ public partial class SequenceView : UserControl
     /// <summary>
     /// Scale factor for minimap width relative to the main view.
     /// </summary>
-    private const double MinimapWidthScale = 0.15;
+    private const double MinimapWidthScale = 0.07;
 
     /// <summary>
     /// Property for hosting external user controls.

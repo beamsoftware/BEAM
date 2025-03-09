@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.Intrinsics;
 using BEAM.Datatypes.Color;
 using BEAM.ImageSequence;
+using BEAM.ViewModels;
+using BEAM.Views.Utility;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BEAM.Renderer;
@@ -84,4 +86,11 @@ public abstract partial class SequenceRenderer : ObservableObject, ICloneable
 
     public abstract string GetName();
     public abstract object Clone();
+
+    /// <summary>
+    /// Returns the embeddable view which is used to configure settings for the specific renderer.
+    /// </summary>
+    /// <param name="baseVm">The base <see cref="SequenceViewModel"/> which is used as a host for the sub window.</param>
+    /// <returns>The View for the settings or null, if no settings are changeable.</returns>
+    public abstract SaveUserControl? GetConfigView(SequenceViewModel baseVm);
 }

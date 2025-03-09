@@ -2,10 +2,11 @@
 using Avalonia.Markup.Xaml;
 using BEAM.Renderer;
 using BEAM.ViewModels;
+using BEAM.Views.Utility;
 
 namespace BEAM.Controls;
 
-public partial class ArgMaxHSVConfigControlView : UserControl, ISaveControl
+public partial class ArgMaxHSVConfigControlView : SaveUserControl
 {
 
     public ArgMaxHSVConfigControlView(ArgMaxRendererColorHSV renderer, SequenceViewModel model)
@@ -19,7 +20,7 @@ public partial class ArgMaxHSVConfigControlView : UserControl, ISaveControl
         AvaloniaXamlLoader.Load(this);
     }
 
-    public void Save()
+    public override void Save()
     {
         ((DataContext as ArgMaxHSVConfigControlViewModel)!).Save();
     }

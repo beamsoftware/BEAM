@@ -824,6 +824,7 @@
 04.02.2025 19:06:35 ERROR! --> ThrownException: Empty sequences are not supported
 2/13/2025 12:53:58 PM ERROR! --> ThrownException: Cannot find sequence in extensions: .pdf, , .p12
 2/13/2025 12:53:58 PM ERROR! --> OpenedFile: Cannot open folder since no suitable sequence type found. (Supported sequences: PNG, ENVI
+19.02.2025 18:34:06 Warning --> BasicMessage: Not implemented yet!
 20.02.2025 11:00:42 Warning --> BasicMessage: Not implemented yet!
 20.02.2025 16:30:59 ERROR! --> OpenedFile: Cannot open files since no suitable sequence type found. (Supported sequences: PNG, ENVI)
 20.02.2025 16:32:06 ERROR! --> OpenedFile: Cannot open files since no suitable sequence type found. (Supported sequences: PNG, ENVI)

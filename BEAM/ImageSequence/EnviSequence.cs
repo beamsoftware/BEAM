@@ -5,6 +5,7 @@ using BEAM.Image;
 using BEAM.Image.Envi;
 using BEAM.Models.Log;
 using BEAM.Profiling;
+using BEAM.Renderer.Attributes;
 
 namespace BEAM.ImageSequence;
 
@@ -12,6 +13,7 @@ namespace BEAM.ImageSequence;
 /// Implementation details for envi images.
 /// </summary>
 /// <param name="imagePaths">The envi images to use inside the sequence.</param>
+[Renderer(RendererEnum.HeatMapRendererRB)]
 public class EnviSequence(List<string> imagePaths, string name) : DiskSequence(imagePaths, name)
 {
     protected internal override IImage LoadImage(int index) => EnviImage.OpenImage(ImagePaths[index]);
